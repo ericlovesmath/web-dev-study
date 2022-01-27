@@ -1,4 +1,3 @@
-
 let iceCream = 'chocolate';
 if (iceCream === 'chocolate') {
     alert('Yay, I love chocolate ice cream!');
