@@ -53,10 +53,20 @@ for (let key in user) {
 
 // Number
 let conv_to_base_16 = 500..toString(16); // Decimal to notate Number. JS is... weird.
-console.log(parseInt('12.5em')); // 12
-console.log(parseInt('0xff', 16)); // 255
+parseInt('12.5em'); // 12
+parseInt('0xff', 16); // 255
 
-// TODO: Make String quick reference
+// String
+let a_string = "Hello";
+a_string == "Hello";
+a_string.length;
+a_string[0];
+a_string.indexOf('el'); // Returns index of first char, -1 if not found
+a_string.includes('el');
+a_string.startsWith('He');
+a_string.endsWith('lo');
+a_string.slice(1, 3); // To end if second arg is empty
+a_string.substring(1, 2); // Second arg is length
 
 // Arrays
 let fruits = ["Apple", "Orange", "Plum"];
@@ -64,4 +74,34 @@ fruits.shift();          // First Elem Pop
 fruits.pop();            // Last Elem Pop
 fruits.unshift('Apple'); // Prepend
 fruits.push("Pear");     // Append
-console.log(fruits, fruits.length);
+fruits.length;
+fruits.forEach(console.log); // map command
+fruits.concat(["Peach", "Grape"]);
+fruits.indexOf("Apple"); // -1 if false
+fruits.includes("Apple");
+
+let users = [
+    { id: 1, name: "John" },
+    { id: 2, name: "Pete" },
+    { id: 3, name: "Mary" }
+];
+
+users.find(item => item.id == 1); // {id: 1, name: "John"}
+fruits.map(item => item.length);
+fruits.sort();
+
+// Map
+let map = new Map();
+map.set('1', 'str1');
+map.get('1');
+map.size;
+
+// Classes
+class User {
+    constructor(name) {
+        this.name = name;
+    }
+    sayHi() {
+        console.log(this.name);
+    }
+}
