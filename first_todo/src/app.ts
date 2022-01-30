@@ -49,10 +49,11 @@ const deleteOrCheck = (event: Event) => {
 
     // Delete Todo
     if (item.classList[0] === "trash-btn") {
-        const todo = item.parentElement!;
+        const todo = item.parentElement as HTMLDivElement;
 
         // Animation, then remove
         todo.classList.add("fall");
+        removeLocalTodos(todo);
         todo.addEventListener('transitionend', () => todo.remove());
     }
 
@@ -135,9 +136,28 @@ const getTodos = () => {
     })
 }
 
+const removeLocalTodos = (todo: HTMLDivElement) => {
+    // Check if already in localStorage
+    let todos: string[];
+    if (localStorage.getItem("todos") === null) {
+        todos = [];
+    } else {
+        todos = JSON.parse(localStorage.getItem("todos")!);
+    }
+    const todoIndex = (<HTMLLIElement>todo.children[0]).innerText;
+    todos.splice(todos.indexOf(todoIndex), 1);
+    localStorage.setItem("todos", JSON.stringify(todos));
+}
+
 // Event Listeners
 
 document.addEventListener("DOMContentLoaded", getTodos);
 todoButton.addEventListener("click", addTodo);
 todoList.addEventListener("click", deleteOrCheck);
 filterOption.addEventListener("click", filterTodo);
+
+// TODO: Save State of completion to, maybe as object?
+// TODO: Highlight todo comments
+// TODO: Refactor code
+// TODO: AddTodo vs getTodos into smaller functions
+//      How to call function with param in .addEventListener?
