@@ -40,3 +40,13 @@ for (let elem of document.body.children) {
 }
 
 let divs = document.getElementsByTagName('div');
+document.body.innerHTML = '<b>test</b>'
+
+let div = document.querySelector('div'); // . for class, # for tag
+div.outerHTML = '<p>A new element</p>';
+elem2.textContent = "name";
+
+//// MODIFYING
+
+let div = document.createElement('div');
+let textNode = document.createTextNode('Here I am');
