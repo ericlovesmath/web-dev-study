@@ -1,0 +1,62 @@
+body {
+    background-color: #a7dbe3;
+    /* background-image: url(https://unsplash.it/500/500); */
+    color: #2f4c5c;
+    font-size: 21px;
+
+    /* Default to first font in list, www.cssfontstack.com */
+    font-family: futura, sans-serif;
+}
+
+h1 {
+    font-size: 70px;
+    color: #3747b3;
+    font-family: Didot, "Didot LT STD", "Hoefler Text",
+                 Garamond, "Times New Roman", serif;
+    margin-bottom: 0px;
+}
+
+h2 { margin-top: 0px; }
+
+p {
+    margin-top: 0px;
+    margin-bottom: 20px;
+
+    /* Gap between lines */
+    line-height: 1.4;
+    font-size: 30px;
+    font-style: italic;
+    font-weight: lighter;
+    text-align: left;
+}
+
+.bolder {
+    font-weight: bolder;
+    text-decoration: underline;
+    text-transform: capitalize;
+}
+
+/* anchor tags */
+a:link { color: blue; }
+a:visited { color: purple; }
+a:hover { color: yellow; }
+a:active { color: blue; }
+
+.body-text {
+    background-color: #79acd1;
+    padding: 50px;
+}
+
+/* Select paragraphs inside class body-text */
+.body-text p { color: white; }
+.body-text a { color: #f7c0f4; }
+.body-text a:hover { color: #DDD; }
+.body-text .important { color: yellow; }
+
+ol { list-style-type: upper-roman; }
+ul { list-style-type: square; }
+ul li { background: red; margin: 5px; }
+
+    
+
+    
