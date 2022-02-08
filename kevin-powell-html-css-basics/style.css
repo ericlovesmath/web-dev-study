@@ -1,0 +1,50 @@
+body {
+    background-color: gray;
+}
+
+h1 {
+    font-size: 30px;
+    color: pink;
+}
+
+span {
+    color: yellow;
+    font-size: 40px;
+}
+
+/* Class = . and id = # */
+.top-section {
+    background: pink;
+}
+
+#below-id {
+    background: green;
+}
+
+/* CSS Box Model */
+
+.box {
+    background: pink;
+    width: 300px;
+
+    /* Gap outside */
+    margin: 50px; 
+
+    border-left-width: 5px;
+    border-left-color: red;
+    border-left-style: solid;
+
+    /* Shorthand border */
+    border-right: 10px solid green; 
+
+    /* Gap inside */
+    padding: 30px;
+
+    /* Shorthand, Clockwise from top */
+    /* 2 values for top and side */
+    padding: 50px 100px 0px 25px;
+
+    /* Background Image */
+    background-image: url(https://unsplash.it/500/500);
+}
+
