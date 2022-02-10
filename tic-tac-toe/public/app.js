@@ -1,144 +1,86 @@
 "use strict";
-// Selectors
-const todoInput = document.querySelector(".todo-input");
-const todoButton = document.querySelector(".todo-button");
-const todoList = document.querySelector(".todo-list");
-const filterOption = document.querySelector(".filter-todo");
-// Functions
-const addTodo = (event) => {
-    // Disables default effect of refreshing page
-    event.preventDefault();
-    // Create Todo div
-    const todoDiv = document.createElement("div");
-    todoDiv.classList.add("todo"); // <div class="todo"></div>
-    // Create li, add to Todo div
-    const newTodo = document.createElement("li");
-    newTodo.innerText = todoInput.value;
-    newTodo.classList.add("todo-item");
-    todoDiv.appendChild(newTodo);
-    // Create Check Button, add to Todo div
-    const completedButton = document.createElement("button");
-    completedButton.innerHTML = '<i class="fas fa-check"></i>';
-    completedButton.classList.add("complete-btn");
-    todoDiv.appendChild(completedButton);
-    // Create Trash Button, add to Todo div
-    const trashButton = document.createElement("button");
-    trashButton.innerHTML = '<i class="fas fa-trash"></i>';
-    trashButton.classList.add("trash-btn");
-    todoDiv.appendChild(trashButton);
-    // Append Todo div to List
-    todoList.appendChild(todoDiv);
-    // Add Todo to localStorage
-    saveLocalStorage(todoInput.value);
-    // Clear Todo input value
-    todoInput.value = "";
-};
-const deleteOrCheck = (event) => {
-    // Get item that was clicked on
-    const item = event.target;
-    // Delete Todo
-    if (item.classList[0] === "trash-btn") {
-        const todo = item.parentElement;
-        // Animation, then remove
-        todo.classList.add("fall");
-        removeLocalTodos(todo);
-        todo.addEventListener('transitionend', () => todo.remove());
-    }
-    // Complete Todo
-    if (item.classList[0] === "complete-btn") {
-        const todo = item.parentElement;
-        todo.classList.toggle("completed");
-    }
-};
-const filterTodo = (event) => {
-    const todos = todoList.childNodes;
-    todos.forEach((todo) => {
-        switch (event.target.value) {
-            case "all":
-                todo.style.display = "flex";
-                break;
-            case "completed":
-                if (todo.classList.contains("completed")) {
-                    todo.style.display = "flex";
-                }
-                else {
-                    todo.style.display = "none";
-                }
-                break;
-            case "uncompleted":
-                if (todo.classList.contains("completed")) {
-                    todo.style.display = "none";
-                }
-                else {
-                    todo.style.display = "flex";
-                }
-        }
+const X_CLASS = 'x';
+const O_CLASS = 'o';
+const WINNING_COMBINATIONS = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+];
+const cellElements = Array.from(document.querySelectorAll('[data-cell]'));
+const board = document.getElementById("board");
+const winningMessageElem = document.getElementById('winning-message');
+const winningMessageTextElem = document.querySelector('[data-winning-message-text]');
+const restartButton = document.getElementById('restartButton');
+let oTurn;
+startGame();
+restartButton.addEventListener('click', startGame);
+function startGame() {
+    oTurn = true;
+    cellElements.forEach(cell => {
+        cell.classList.remove(X_CLASS);
+        cell.classList.remove(O_CLASS);
+        cell.removeEventListener('click', handleClick);
+        // { once: true } makes it only trigger once
+        cell.addEventListener('click', handleClick, { once: true });
     });
-};
-const saveLocalStorage = (todo) => {
-    // Check if already in localStorage
-    let todos;
-    if (localStorage.getItem("todos") === null) {
-        todos = [];
+    setBoardHoverClass();
+    winningMessageElem.classList.remove('show');
+}
+function handleClick(e) {
+    const cell = e.target;
+    const currentClass = oTurn ? O_CLASS : X_CLASS;
+    placeMark(cell, currentClass);
+    if (checkWin(currentClass)) {
+        endGame(false);
+    }
+    else if (isDraw()) {
+        endGame(true);
     }
     else {
-        todos = JSON.parse(localStorage.getItem("todos"));
+        swapTurns();
+        setBoardHoverClass();
     }
-    todos.push(todo);
-    localStorage.setItem("todos", JSON.stringify(todos));
-};
-const getTodos = () => {
-    // Check if already in localStorage
-    let todos;
-    if (localStorage.getItem("todos") === null) {
-        todos = [];
+}
+function endGame(draw) {
+    if (draw) {
+        winningMessageTextElem.innerText = "Draw!";
     }
     else {
-        todos = JSON.parse(localStorage.getItem("todos"));
+        winningMessageTextElem.innerText = `${oTurn ? "O's" : "X's"} Wins!`;
     }
-    todos.forEach((todo) => {
-        // Create Todo div
-        const todoDiv = document.createElement("div");
-        todoDiv.classList.add("todo"); // <div class="todo"></div>
-        // Create li, add to Todo div
-        const newTodo = document.createElement("li");
-        newTodo.innerText = todo;
-        newTodo.classList.add("todo-item");
-        todoDiv.appendChild(newTodo);
-        // Create Check Button, add to Todo div
-        const completedButton = document.createElement("button");
-        completedButton.innerHTML = '<i class="fas fa-check"></i>';
-        completedButton.classList.add("complete-btn");
-        todoDiv.appendChild(completedButton);
-        // Create Trash Button, add to Todo div
-        const trashButton = document.createElement("button");
-        trashButton.innerHTML = '<i class="fas fa-trash"></i>';
-        trashButton.classList.add("trash-btn");
-        todoDiv.appendChild(trashButton);
-        // Append Todo div to List
-        todoList.appendChild(todoDiv);
+    winningMessageElem.classList.add("show");
+}
+function isDraw() {
+    return cellElements.every(cell => {
+        return cell.classList.contains(O_CLASS) ||
+            cell.classList.contains(X_CLASS);
     });
-};
-const removeLocalTodos = (todo) => {
-    // Check if already in localStorage
-    let todos;
-    if (localStorage.getItem("todos") === null) {
-        todos = [];
+}
+function placeMark(cell, currentClass) {
+    cell.classList.add(currentClass);
+}
+function swapTurns() {
+    oTurn = !oTurn;
+}
+function setBoardHoverClass() {
+    board.classList.remove(O_CLASS);
+    board.classList.remove(X_CLASS);
+    if (oTurn) {
+        board.classList.add(O_CLASS);
     }
     else {
-        todos = JSON.parse(localStorage.getItem("todos"));
+        board.classList.add(X_CLASS);
     }
-    const todoIndex = todo.children[0].innerText;
-    todos.splice(todos.indexOf(todoIndex), 1);
-    localStorage.setItem("todos", JSON.stringify(todos));
-};
-// Event Listeners
-document.addEventListener("DOMContentLoaded", getTodos);
-todoButton.addEventListener("click", addTodo);
-todoList.addEventListener("click", deleteOrCheck);
-filterOption.addEventListener("click", filterTodo);
-// TODO: Save State of completion to, maybe as object?
-// TODO: Highlight todo comments
-// TODO: Refactor code
-// TODO: AddTodo vs getTodos into smaller functions
-//      How to call function with param in .addEventListener?
+}
+function checkWin(currentClass) {
+    return WINNING_COMBINATIONS.some(combination => {
+        return combination.every(index => {
+            return cellElements[index].classList.contains(currentClass);
+        });
+    });
+}
