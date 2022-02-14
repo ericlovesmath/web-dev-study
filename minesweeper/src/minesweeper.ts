@@ -2,7 +2,7 @@
 export const TILE_STATUSES = {
     HIDDEN: 'hidden',
     MINE: 'mine',
-    NUMER: 'number',
+    NUMBER: 'number',
     FLAGGED: 'flagged'
 }
 
@@ -58,9 +58,48 @@ export function flagTile(tile: tile) {
     } else {
         tile.status = TILE_STATUSES.FLAGGED;
     }
-
 }
 
+export function revealTile(board: tile[][], tile: tile) {
+    console.log(tile);
+    if (tile.status !== TILE_STATUSES.HIDDEN) {
+        return;
+    }
+
+    if (tile.mine) {
+        tile.status = TILE_STATUSES.MINE;
+        return;
+    }
+
+    tile.status = TILE_STATUSES.NUMBER;
+    const adjTiles = neighboringTiles(board, tile);
+    const mines = adjTiles.filter(t => t.mine);
+    if (mines.length === 0) {
+        adjTiles.forEach(revealTile.bind(null, board));
+    } else {
+        tile.elem.textContent = mines.length.toString();
+    }
+}
+
+export function checkWin(board: tile[][]): boolean {
+    return board.every(row => {
+        return row.every(tile => {
+            return tile.status === TILE_STATUSES.NUMBER || (
+                tile.mine && (
+                    tile.status === TILE_STATUSES.HIDDEN || tile.status === TILE_STATUSES.FLAGGED
+                )
+            )
+        })
+    })
+}
+
+export function checkLose(board: tile[][]): boolean {
+    return board.some(row => {
+        return row.some(tile => {
+            return tile.status === TILE_STATUSES.MINE;
+        })
+    })
+}
 
 function getMinePositions(boardSize: number, numberOfMines: number): pos[] {
 
@@ -84,3 +123,18 @@ function getMinePositions(boardSize: number, numberOfMines: number): pos[] {
 function randomNumber(upper: number): number {
     return Math.floor(Math.random() * upper);
 }
+
+function neighboringTiles(board: tile[][], { x, y }: pos): tile[] {
+    const tiles: tile[] = [];
+
+    for (let xOffset = -1; xOffset <= 1; xOffset++) {
+        for (let yOffset = -1; yOffset <= 1; yOffset++) {
+            const tile = board[x + xOffset]?.[y + yOffset];
+            if (tile) tiles.push(tile);
+        }
+    }
+
+    return tiles
+
+}
+
