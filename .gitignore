@@ -1,4 +1,3 @@
 node_modules/
-minesweeper/public/*.js
 todo-list/public/*.js
 tic-tac-toe/public/*.js

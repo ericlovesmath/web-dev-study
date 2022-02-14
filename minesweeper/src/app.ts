@@ -1,4 +1,4 @@
-import { createBoard, flagTile } from './minesweeper.js';
+import { createBoard, flagTile, TILE_STATUSES } from './minesweeper.js';
 
 const BOARD_SIZE = 10;
 const NUMBER_OF_MINES = 10;
@@ -14,11 +14,21 @@ board.forEach(row => {
         boardElem.append(tile.elem);
         tile.elem.addEventListener('click', () => {})
         tile.elem.addEventListener('contextmenu', (e: Event) => {
-            flagTile(tile);
             e.preventDefault();
+            flagTile(tile);
+            listMinesLeft();
         })
     })
 })
 
 boardElem.style.setProperty("--size", BOARD_SIZE.toString());
 minesLeftText.textContent = NUMBER_OF_MINES.toString();
+
+function listMinesLeft() {
+    const flaggedTilesCount = board.reduce((count, row) => {
+        return count + row.filter(tile => tile.status == TILE_STATUSES.FLAGGED).length
+    }, 0)
+
+    minesLeftText.textContent = (NUMBER_OF_MINES - flaggedTilesCount).toString();
+
+}

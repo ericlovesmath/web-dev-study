@@ -1,5 +1,5 @@
 // TODO: Make this an enum(?)
-const TILE_STATUSES = {
+export const TILE_STATUSES = {
     HIDDEN: 'hidden',
     MINE: 'mine',
     NUMER: 'number',
