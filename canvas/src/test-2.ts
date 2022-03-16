@@ -9,30 +9,50 @@ export function mainTwo() {
   canvas.width = width;
   canvas.height = height;
 
-  let x = Math.random() * width;
-  let y = Math.random() * height;
-  let dx = (Math.random() - 0.5) * 10;
-  let dy = (Math.random() - 0.5) * 10;
-  let radius = 30;
+  class Circle {
+
+    x: number;
+    y: number;
+    dx: number;
+    dy: number;
+    radius: number;
+
+    constructor(x: number, y: number, dx: number, dy: number, radius: number) {
+      this.x = x;
+      this.y = y;
+      this.dx = dx;
+      this.dy = dy;
+      this.radius = radius;
+    }
+
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+      ctx.strokeStyle = "blue";
+      ctx.stroke();
+    }
+
+    update() {
+      if (this.x + this.radius > width || this.x - this.radius < 0) {
+        this.dx *= -1;
+      }
+      if (this.y + this.radius > height || this.y - this.radius < 0) {
+        this.dy *= -1;
+      }
+      this.x += this.dx;
+      this.y += this.dy;
+
+      this.draw();
+    }
+  }
+
+  let circle = new Circle(200, 200, 4, 5, 30);
+
   // Runs each frame
   function animate() {
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, width, height);
-
-    ctx.beginPath();
-    ctx.arc(x, y, radius, 0, Math.PI * 2, false);
-    ctx.strokeStyle = "blue";
-    ctx.stroke();
-
-    if (x + radius > width || x - radius < 0) {
-      dx *= -1;
-    }
-    if (y + radius > height || y - radius < 0) {
-      dy *= -1;
-    }
-
-    x += dx;
-    y += dy;
+    circle.update();
   }
 
   // animate();
